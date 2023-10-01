@@ -5,6 +5,7 @@ module.exports = {
       const employees = await employeesService.getAll();
       res.json({
         result: employees.map((employee) => ({
+          id: employee.id,
           name: employee.name,
           contact: employee.contact,
         })),
