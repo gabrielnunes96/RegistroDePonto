@@ -1,4 +1,5 @@
 const employeesService = require("../../services/employees-services/employeesServices");
+const validations = require("../../utils/validation.js");
 module.exports = {
   getAll: async (req, res) => {
     try {
@@ -32,19 +33,24 @@ module.exports = {
   },
   insertEmployee: async (req, res) => {
     try {
-      const { name, contact } = req.body;
-      let numRegex = /^\d{11}$/;
+      const { name, contact, cpf } = req.body;
 
-      if (!numRegex.test(contact)) {
+      if (!validations.contactValidation(contact)) {
         return res.status(400).json({
           error: "Contact number must be eleven (11) numeric digits.",
           result: null,
         });
       }
-      if (!name || !contact) {
+      if (!validations.nullValidation(name, contact)) {
         return res
           .status(400)
           .json({ error: "Name and contact are required", result: null });
+      }
+      if (!validations.CPFValidation(cpf)) {
+        return res.status(400).json({
+          error: "Error while inserting CPF. Please check and try again.",
+          result: null,
+        });
       }
       const employeeId = await employeesService.insertEmployee(name, contact);
       if (employeeId === null) {
@@ -59,27 +65,34 @@ module.exports = {
   },
   updateEmployee: async (req, res) => {
     try {
-      const { id, name, contact } = req.body;
-      let numRegex = /^\d{11}$/;
+      const { id, name, contact, cpf } = req.body;
 
-      if (!numRegex.test(contact)) {
+      if (!contactValidation(contact)) {
         return res.status(400).json({
           error: "Contact number must be eleven (11) numeric digits.",
           result: null,
         });
       }
-      if (!name || !contact) {
+      if (!nullValidation(name, contact)) {
         return res
           .status(400)
           .json({ error: "Name and contact are required", result: null });
       }
-      const updated = await employeesService.updateEmployee(id, name, contact);
+      if (CPFValidation(cpf)) {
+        return res.status(400).json({
+          error: "Error while inserting CPF. Please check and try again.",
+          result: null,
+        });
+      }
+
+      const updated = await employeesService.updateEmployee(id, name, contact, cpf);
       if (!updated) {
         return res
           .status(500)
           .json({ error: "Error while updating employee", result: null });
       }
-      res.json({ result: { id } });
+      res.status(200).json({ result: `Updated fields: ${ id, name, contact, cpf}` });
+      
     } catch (error) {
       res.status(500).json({ error: "Server error", result: null });
     }

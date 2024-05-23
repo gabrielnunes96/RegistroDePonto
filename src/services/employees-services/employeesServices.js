@@ -20,10 +20,10 @@ module.exports = {
       });
     });
   },
-  insertEmployee: (name, contact) => {
+  insertEmployee: (name, contact, cpf) => {
     return new Promise((resolve, reject) => {
-      let query = "INSERT INTO employees (name, contact) VALUES (?, ?)";
-      db.query(query, [name, contact], (error, results) => {
+      let query = "INSERT INTO employees (name, contact, cpf) VALUES (?, ?, ?)";
+      db.query(query, [name, contact, cpf], (error, results) => {
         if (error) {
           reject(error);
           return;
@@ -32,10 +32,10 @@ module.exports = {
       });
     });
   },
-  updateEmployee: (id, name, contact) => {
+  updateEmployee: (id, name, contact, cpf) => {
     return new Promise((resolve, reject) => {
-      let query = "UPDATE employees SET name = ?, contact = ? WHERE id = ?";
-      db.query(query, [name, contact, id], (error, results) => {
+      let query = "UPDATE employees SET name = ?, contact = ?, cpf = ? WHERE id = ?";
+      db.query(query, [name, contact, id, cpf], (error, results) => {
         if (error) {
           reject(error);
           return;

@@ -9,7 +9,9 @@ const config = {
   },
 };
 
-const connection = new mssql.Connection(config);
+const connection = new mssql.connect(config, err => {
+  
+});
 
 connection.on('error', (error) => {
   console.error('SQL Server Connection Error:', error);
