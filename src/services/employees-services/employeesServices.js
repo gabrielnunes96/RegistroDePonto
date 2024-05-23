@@ -4,11 +4,7 @@ module.exports = {
     return new Promise((resolve, reject) => {
       let query = "SELECT * FROM employees";
       db.query(query, (error, results) => {
-        if (error) {
-          reject(error);
-          return;
-        }
-        resolve(results);
+        error ? reject(error) : resolve(results);
       });
     });
   },
@@ -16,15 +12,11 @@ module.exports = {
     return new Promise((resolve, reject) => {
       let query = "SELECT * FROM employees WHERE id = ?";
       db.query(query, [id], (error, results) => {
-        if (error) {
-          reject(error);
-          return;
-        }
-        if (results.length === 0) {
-          resolve(false);
-        } else {
-          resolve(results[0]);
-        }
+        error
+          ? reject(error)
+          : resolve(
+              results.length === 0 ? resolve(false) : resolve(results[0])
+            );
       });
     });
   },

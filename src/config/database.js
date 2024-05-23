@@ -1,14 +1,18 @@
-const mysql = require("mysql");
+const mssql = require('mssql');
 
-const connection = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASS,
+const config = {
+  server: process.env.DB_HOST,
   database: process.env.DB_NAME,
+  auth: {
+    username: process.env.DB_USER,
+    password: process.env.DB_PASS,
+  },
+};
+
+const connection = new mssql.Connection(config);
+
+connection.on('error', (error) => {
+  console.error('SQL Server Connection Error:', error);
 });
 
-connection.connect((error) => {
-  if (error) throw error;
-  console.log(`Connected to Database: ${process.env.DB_NAME}`);
-});
 module.exports = connection;
