@@ -28,7 +28,7 @@ const validations = {
     return numRegex.test(contact);
   },
   nullValidation: function nullValidation(name, contact) {
-    return !name || !contact;
+    return name != "" || contact != "";
   },
 };
 

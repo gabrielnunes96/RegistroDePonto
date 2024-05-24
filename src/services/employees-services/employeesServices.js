@@ -10,49 +10,47 @@ module.exports = {
   },
   getById: (id) => {
     return new Promise((resolve, reject) => {
-      let query = "SELECT * FROM employees WHERE id = ?";
-      db.query(query, [id], (error, results) => {
+      let query = `SELECT * FROM employees WHERE id = '${id}'`;
+      db.query(query, (error, results) => {
         error
           ? reject(error)
-          : resolve(
-              results.length === 0 ? resolve(false) : resolve(results[0])
-            );
+          : resolve(results.length === 0 ? resolve(false) : resolve(results));
       });
     });
   },
   insertEmployee: (name, contact, cpf) => {
     return new Promise((resolve, reject) => {
-      let query = "INSERT INTO employees (name, contact, cpf) VALUES (?, ?, ?)";
-      db.query(query, [name, contact, cpf], (error, results) => {
+      let query = `INSERT INTO employees (name, contact, cpf) VALUES ('${name}','${contact}','${cpf}')`;
+      db.query(query, (error, results) => {
         if (error) {
           reject(error);
           return;
         }
-        resolve(results.insertId);
+        resolve(results);
       });
     });
   },
   updateEmployee: (id, name, contact, cpf) => {
     return new Promise((resolve, reject) => {
-      let query = "UPDATE employees SET name = ?, contact = ?, cpf = ? WHERE id = ?";
-      db.query(query, [name, contact, id, cpf], (error, results) => {
+      let query = `UPDATE employees SET name = '${name}', contact = '${contact}', cpf = '${cpf}'  WHERE id = '${id}'`;
+      db.query(query, (error, results) => {
         if (error) {
           reject(error);
           return;
         }
-        resolve(results.affectedRows > 0);
+        resolve(results);
       });
     });
   },
   deleteEmployee: (id) => {
     return new Promise((resolve, reject) => {
-      let query = "DELETE FROM employees WHERE id = ?";
-      db.query(query, [id], (error, results) => {
+      let query = `DELETE FROM employees WHERE id = '${id}'`;
+      db.query(query, (error, results) => {
         if (error) {
           reject(error);
           return;
         }
-        resolve(results.affectedRows > 0);
+        resolve(results);
       });
     });
   },

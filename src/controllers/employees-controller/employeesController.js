@@ -1,119 +1,127 @@
 const employeesService = require("../../services/employees-services/employeesServices");
-const validations = require("../../utils/validation.js");
+const validations = require("../../utils/validationCall.js");
 module.exports = {
   getAll: async (req, res) => {
     try {
       const employees = await employeesService.getAll();
-      res.json({
-        result: employees.map((employee) => ({
-          id: employee.id,
-          name: employee.name,
-          contact: employee.contact,
-        })),
-      });
+      if (!employees || employees.recordsets[0].length === 0) {
+        return res
+          .status(404)
+          .json({ msg: "None", result: employees.recordset });
+      } else {
+        return res
+          .status(200)
+          .json({ msg: "OK:", result: employees.recordset });
+      }
     } catch (error) {
-      res.status(500).json({ error: "Error.", result: [] });
+      return res
+        .status(500)
+        .json({ msg: "Database Error:", result: error.message });
     }
   },
   getById: async (req, res) => {
     try {
       let id = req.params.id;
-      let employee = await employeesService.getById(id);
-
-      if (!employee)
+      const employee = await employeesService.getById(id);
+      if (!employee || employee.recordsets[0].length === 0) {
         return res
           .status(404)
-          .json({ error: "Employee not found", result: null });
-      res.json({ result: { name: employee.name, contact: employee.contact } });
-    } catch (error) {
-      res
+          .json({ msg: "Employee not found", result: employee.recordset });
+      } else {
+        return res.status(200).json({ msg: "OK", result: employee.recordset });
+      }
+    } catch (erro) {
+      return res
         .status(500)
-        .json({ error: "Error searching employee by Id", result: null });
+        .json({ msg: "Error searching employee by Id", result: `${erro}` });
     }
   },
   insertEmployee: async (req, res) => {
     try {
       const { name, contact, cpf } = req.body;
 
-      if (!validations.contactValidation(contact)) {
-        return res.status(400).json({
-          error: "Contact number must be eleven (11) numeric digits.",
-          result: null,
+      if (!req.body || Object.keys(req.body).length === 0)
+        return res.status(400).json({ msg: "Invalid object", result: null });
+
+      let msg = validations.isValid(req.body);
+      if (!msg == "") {
+        return res.status(400).json({ msg: `${msg}`, result: null });
+      }
+      const employee = await employeesService.insertEmployee(
+        name,
+        contact,
+        cpf
+      );
+      if (employee.rowsAffected != 0) {
+        return res.status(200).json({
+          msg: "OK",
+          result: {
+            name: req.body.name,
+            contact: req.body.contact,
+            cpf: req.body.cpf,
+          },
         });
-      }
-      if (!validations.nullValidation(name, contact)) {
-        return res
-          .status(400)
-          .json({ error: "Name and contact are required", result: null });
-      }
-      if (!validations.CPFValidation(cpf)) {
-        return res.status(400).json({
-          error: "Error while inserting CPF. Please check and try again.",
-          result: null,
-        });
-      }
-      const employeeId = await employeesService.insertEmployee(name, contact);
-      if (employeeId === null) {
+      } else {
         return res
           .status(500)
-          .json({ error: "Error while inserting employee", result: null });
+          .json({ msg: "Error while inserting employee", result: null });
       }
-      res.json({ result: { id: employeeId } });
-    } catch (error) {
-      res.status(500).json({ error: "Server error", result: null });
+    } catch (erro) {
+      return res.status(500).json({ msg: "Server error", result: `${erro}` });
     }
   },
   updateEmployee: async (req, res) => {
     try {
       const { id, name, contact, cpf } = req.body;
 
-      if (!contactValidation(contact)) {
-        return res.status(400).json({
-          error: "Contact number must be eleven (11) numeric digits.",
-          result: null,
-        });
-      }
-      if (!nullValidation(name, contact)) {
-        return res
-          .status(400)
-          .json({ error: "Name and contact are required", result: null });
-      }
-      if (CPFValidation(cpf)) {
-        return res.status(400).json({
-          error: "Error while inserting CPF. Please check and try again.",
-          result: null,
-        });
+      let msg = validations.isValid(req.body);
+      if (!msg == "") {
+        return res.status(400).json({ msg: `${msg}`, result: null });
       }
 
-      const updated = await employeesService.updateEmployee(id, name, contact, cpf);
-      if (!updated) {
+      const updatedEmployee = await employeesService.updateEmployee(
+        id,
+        name,
+        contact,
+        cpf
+      );
+
+      if (updatedEmployee.rowsAffected != 0) {
+        return res.status(200).json({
+          msg: "OK",
+          result: {
+            name: req.body.name,
+            contact: req.body.contact,
+            cpf: req.body.cpf,
+          },
+        });
+      } else {
         return res
           .status(500)
-          .json({ error: "Error while updating employee", result: null });
+          .json({ msg: "Error while inserting employee", result: null });
       }
-      res.status(200).json({ result: `Updated fields: ${ id, name, contact, cpf}` });
-      
-    } catch (error) {
-      res.status(500).json({ error: "Server error", result: null });
+    } catch (erro) {
+      res.status(500).json({ error: "Server error", result: `${erro}` });
     }
   },
   deleteEmployee: async (req, res) => {
     try {
       let id = req.params.id;
       let deleted = await employeesService.deleteEmployee(id);
-
-      if (!deleted)
+      if (deleted.rowsAffected != 0) {
+        return res.json({
+          result: { msg: "OK", id: `${id}` },
+        });
+      } else {
         return res.status(404).json({
-          error: "Employee not found or could not be deleted.",
+          msg: "Employee not found or could not be deleted.",
           result: null,
         });
-      res.json({
-        result: { message: "Employee deleted sucessfully" },
-      });
-    } catch (error) {
+      }
+    } catch (erro) {
       res
         .status(500)
-        .json({ error: "Error searching employee by Id", result: null });
+        .json({ msg: "Error searching employee by Id", result: `${erro}` });
     }
   },
 };

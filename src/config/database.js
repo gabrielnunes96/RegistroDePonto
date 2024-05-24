@@ -1,20 +1,20 @@
-const mssql = require('mssql');
+const mssql = require("mssql");
 
 const config = {
+  user: process.env.DB_USER,
+  password: process.env.DB_PASS,
   server: process.env.DB_HOST,
   database: process.env.DB_NAME,
-  auth: {
-    username: process.env.DB_USER,
-    password: process.env.DB_PASS,
+  options: {
+    trustedconnection: true,
+    trustServerCertificate: true
   },
 };
 
-const connection = new mssql.connect(config, err => {
-  
+const connection = mssql.connect(config, (err) => {
+  if (err) {
+    console.error("SQL Server Connection Error:", err);
+  }
 });
 
-connection.on('error', (error) => {
-  console.error('SQL Server Connection Error:', error);
-});
-q
 module.exports = connection;
