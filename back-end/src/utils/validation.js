@@ -1,5 +1,6 @@
 const validations = {
   CPFValidation: function CPFValidation(strCPF) {
+    strCPF = strCPF.replace(/[^\d]/g, "");
     var soma;
     var resto;
     var retorno = true;
@@ -23,12 +24,16 @@ const validations = {
 
     return retorno;
   },
+
   contactValidation: function contactValidation(contact) {
-    let numRegex = /^\d{11}$/;
-    return numRegex.test(contact);
+    let contactRegex = /^\d{11}$/;
+    return contactRegex.test(contact);
   },
-  nullValidation: function nullValidation(name, contact) {
-    return name != "" || contact != "";
+  nullValidation: function nullValidation(value) {
+    return value != "";
+  },
+  objectValidation: function objectValidation(obj) {
+    return !obj || !Object.keys(obj).length !== 0;
   },
 };
 
