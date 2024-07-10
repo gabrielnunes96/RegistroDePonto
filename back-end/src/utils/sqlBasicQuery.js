@@ -16,7 +16,6 @@ const querys = {
     const columns = Object.keys(_obj.columns);
     const values = Object.values(_obj.columns);
 
-    // Create a SET clause with placeholders for updated values:
     const formattedSetClause = columns
       .map((col, index) => `${col} = '${values[index]}'`)
       .join(", ");
