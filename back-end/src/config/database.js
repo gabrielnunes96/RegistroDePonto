@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const connectionString = "mongodb://localhost:27017/local";
+const connectionString = "mongodb://localhost:27017/WorkLog_Employees";
 async function db() {
   try {
     mongoose.connect(connectionString);

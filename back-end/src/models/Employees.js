@@ -17,7 +17,6 @@ const employeeSchema = new Schema(
     },
     pin: {
       type: String,
-      required: true,
     },
     password: {
       type: String,

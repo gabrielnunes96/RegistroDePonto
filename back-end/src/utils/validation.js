@@ -24,7 +24,6 @@ const validations = {
 
     return retorno;
   },
-
   contactValidation: function contactValidation(contact) {
     let contactRegex = /^\d{11}$/;
     return contactRegex.test(contact);

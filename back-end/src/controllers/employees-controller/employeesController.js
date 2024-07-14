@@ -1,11 +1,10 @@
 //#region Imports
-const employeesService = require("./../../services/employees-services/employeesServices.js");
 const { Employees } = require("../../models/Employees.js");
 const validations = require("../../utils/validationCall.js");
-const securedPin = require("secure-pin");
-const bcrypt = require("bcrypt");
+const mapper = require("../../mappers/employee-mapper.js");
 //#endregion
 module.exports = {
+  
   getAll: async (res) => {
     try {
       const _employees = await employeesService.getAll();
@@ -41,28 +40,21 @@ module.exports = {
   },
   insertEmployee: async (req, res) => {
     try {
-      req.body.pin = securedPin.generatePinSync(4);
-      req.body.password = await bcrypt.hash(req.body.password, 5);
+      let employee = mapper.mapToEmployee(req.body);
+      let msg = validations.isValid(employee);
 
-      let msg = validations.isValid(req.body);
       if (!msg == "") {
         return res.status(400).json({ msg: `${msg}`, result: null });
       }
-      //const _employee = await employeesService.insertEmployee(req.body);
-      const response = await Employees.create(req.body);
-      console.log(response);
-      if (_employee.rowsAffected != 0) {
-        return res.status(200).json({
-          msg: "OK",
-          result: { employee: _employee.recordset },
-        });
+      const response = await Employees.create(employee);
+      if (!response.errors) {
+        return res.status(200).json({ msg: "OK" });
       } else {
-        return res
-          .status(500)
-          .json({ msg: "Error while inserting employee", result: null });
+        return res.status(400).json({ msg: "Error while inserting employee" });
       }
     } catch (erro) {
-      return res.status(500).json({ msg: "Server error", result: `${erro}` });
+      console.log(erro);
+      return res.status(500).json({ msg: "Server error", error: `${erro}` });
     }
   },
   updateEmployee: async (req, res) => {
