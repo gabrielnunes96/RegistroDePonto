@@ -1,20 +1,11 @@
-const mssql = require("mssql");
-
-const config = {
-  user: process.env.DB_USER,
-  password: process.env.DB_PASS,
-  server: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  options: {
-    trustedconnection: true,
-    trustServerCertificate: true,
-  },
-};
-
-const connection = mssql.connect(config, (err) => {
-  if (err) {
-    console.error("SQL Server Connection Error:", err);
+const mongoose = require("mongoose");
+const connectionString = "mongodb://localhost:27017/local";
+async function db() {
+  try {
+    mongoose.connect(connectionString);
+    console.log(`Connected to MongoDB: ${connectionString}`);
+  } catch (err) {
+    console.log(`Error: ${err}`);
   }
-});
-
-module.exports = connection;
+}
+module.exports = db;

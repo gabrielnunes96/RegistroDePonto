@@ -1,9 +1,8 @@
-const express = require("express");
-const router = express.Router();
+const router = require("express").Router();
 
 /* Controller Variables */
 const employeesController = require("../controllers/employees-controller/employeesController.js");
-const punchinController = require("../controllers/punch-in-controller/punchInController.js");
+const entriesController = require("../controllers/entries-controller/entriesController.js");
 
 /* Controller Routes */
 

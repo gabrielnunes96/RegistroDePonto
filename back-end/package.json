@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon ./src/config/server.js",
+    "start": "nodemon ./src/config/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -16,8 +16,8 @@
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": ">=4.19.2",
-    "mssql": "^10.0.2",
-    "mysql": "^2.18.1",
+    "mongodb": "^6.8.0",
+    "mongoose": "^8.5.1",
     "secure-pin": "^1.0.14"
   },
   "devDependencies": {

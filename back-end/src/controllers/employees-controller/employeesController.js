@@ -1,11 +1,12 @@
 //#region Imports
 const employeesService = require("./../../services/employees-services/employeesServices.js");
+const { Employees } = require("../../models/Employees.js");
 const validations = require("../../utils/validationCall.js");
 const securedPin = require("secure-pin");
 const bcrypt = require("bcrypt");
 //#endregion
 module.exports = {
-  getAll: async (req, res) => {
+  getAll: async (res) => {
     try {
       const _employees = await employeesService.getAll();
       if (!_employees || _employees.recordsets[0].length === 0) {
@@ -47,8 +48,9 @@ module.exports = {
       if (!msg == "") {
         return res.status(400).json({ msg: `${msg}`, result: null });
       }
-
-      const _employee = await employeesService.insertEmployee(req.body);
+      //const _employee = await employeesService.insertEmployee(req.body);
+      const response = await Employees.create(req.body);
+      console.log(response);
       if (_employee.rowsAffected != 0) {
         return res.status(200).json({
           msg: "OK",
