@@ -10,7 +10,7 @@ const entriesController = require("../controllers/entries-controller/entriesCont
 router.get("/getEmployees", employeesController.getAll);
 router.get("/getEmployeesById/:id", employeesController.getById);
 router.post("/insertEmployee", employeesController.insertEmployee);
-router.put("/updateEmployee", employeesController.updateEmployee);
+router.put("/updateEmployee/:id", employeesController.updateEmployee);
 router.delete("/deleteEmployee/:id", employeesController.deleteEmployee);
 
 /* Punch-in Routes */

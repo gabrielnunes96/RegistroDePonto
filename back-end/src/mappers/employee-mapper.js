@@ -5,7 +5,7 @@ const mappers = {
       name: reqBody.name,
       contact: reqBody.contact,
       cpf: reqBody.cpf,
-      pin: security.generatePin(),
+      pin: security.generatePin(4),
       password: security.encryptPassword(reqBody.password),
     };
     return employee;

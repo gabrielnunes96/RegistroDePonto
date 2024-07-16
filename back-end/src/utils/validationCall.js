@@ -5,7 +5,7 @@ const cpfError = "Error while inserting CPF. Please check and try again";
 const invalidObject = "Invalid Object.";
 let msg = "";
 const callValidation = {
-  isValid: function isValid(obj) {
+  execValidations: function execValidations(obj) {
     if (!functions.objectValidation(obj)) {
       msg = invalidObject;
     }
@@ -23,28 +23,6 @@ const callValidation = {
       msg = cpfError;
     }
     return msg;
-  },
-  isValidByValue: function isValidByValue(obj) {
-    if (!functions.objectValidation(obj)) {
-      msg = invalidObject;
-    }
-    if (obj.name) {
-      if (!functions.nullValidation(obj.name)) msg = reqMissingFields;
-    }
-    if (obj.contact) {
-      if (!functions.nullValidation(obj.contact)) msg = reqMissingFields;
-      if (!functions.contactValidation(obj.contact)) msg = contactErrorMsg;
-    }
-    if (obj.cpf) {
-      if (!functions.nullValidation(obj.cpf)) msg = reqMissingFields;
-      if (!functions.CPFValidation(obj.cpf)) msg = cpfError;
-    }
-    if (obj.password) {
-      if (!functions.nullValidation(obj.password)) msg = reqMissingFields;
-    }
-    if (obj.pin) {
-      if (!functions.nullValidation(obj.pin)) msg = reqMissingFields;
-    }
   },
 };
 module.exports = callValidation;

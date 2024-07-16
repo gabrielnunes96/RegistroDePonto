@@ -4,18 +4,16 @@ const validations = require("../../utils/validationCall.js");
 const mapper = require("../../mappers/employee-mapper.js");
 //#endregion
 module.exports = {
-  
-  getAll: async (res) => {
+  getAll: async (req, res) => {
     try {
-      const _employees = await employeesService.getAll();
-      if (!_employees || _employees.recordsets[0].length === 0) {
-        return res
-          .status(404)
-          .json({ msg: "None", result: _employees.recordset });
+      const response = await Employees.find(
+        {},
+        { name: 1, contact: 1, cpf: 1, pin: 1 }
+      );
+      if (!response.errors) {
+        return res.status(200).json({ msg: "OK", result: response });
       } else {
-        return res
-          .status(200)
-          .json({ msg: "OK:", result: _employees.recordset });
+        return res.status(404).json({ msg: "None:", result: response });
       }
     } catch (error) {
       return res
@@ -25,14 +23,16 @@ module.exports = {
   },
   getById: async (req, res) => {
     try {
-      let id = req.params.id;
-      const employee = await employeesService.getById(id);
-      if (!employee || employee.recordsets[0].length === 0) {
+      const response = await Employees.findOne(
+        { _id: req.params.id },
+        { __v: 0 }
+      );
+      if (!response.errors) {
+        return res.status(200).json({ msg: "OK", result: response });
+      } else {
         return res
           .status(404)
-          .json({ msg: "Employee not found", result: employee.recordset });
-      } else {
-        return res.status(200).json({ msg: "OK", result: employee.recordset });
+          .json({ msg: "Employee not found", result: response });
       }
     } catch (erro) {
       return res.status(500).json({ msg: "Server error", result: `${erro}` });
@@ -40,13 +40,12 @@ module.exports = {
   },
   insertEmployee: async (req, res) => {
     try {
-      let employee = mapper.mapToEmployee(req.body);
-      let msg = validations.isValid(employee);
+      let msg = validations.execValidations(req.body);
 
       if (!msg == "") {
         return res.status(400).json({ msg: `${msg}`, result: null });
       }
-      const response = await Employees.create(employee);
+      const response = await Employees.create(mapper.mapToEmployee(req.body));
       if (!response.errors) {
         return res.status(200).json({ msg: "OK" });
       } else {
@@ -59,38 +58,21 @@ module.exports = {
   },
   updateEmployee: async (req, res) => {
     try {
-      let msg = validations.isValid(req.body);
+      let msg = validations.execValidations(req.body);
       if (!msg == "") {
         return res.status(400).json({ msg: `${msg}`, result: null });
       }
-
-      const updatedEmployee = await employeesService.updateEmployee(req.body);
-      if (updatedEmployee.rowsAffected != 0) {
+      const response = await Employees.findByIdAndUpdate(
+        req.params.id,
+        mapper.mapToEmployee(req.body),
+        {
+          returnDocument: "after",
+        }
+      );
+      if (response) {
         return res.status(200).json({
           msg: "OK",
-          result: { updated: updatedEmployee.recordset },
-        });
-      } else {
-        return res
-          .status(500)
-          .json({ msg: "Error while updating employee", result: null });
-      }
-    } catch (erro) {
-      res.status(500).json({ error: "Server error", result: `${erro}` });
-    }
-  },
-  updateValueByParam: async (req, res) => {
-    try {
-      let msg = validations.isValidByValue(req.body);
-      if (!msg == "") {
-        return res.status(400).json({ msg: `${msg}`, result: null });
-      }
-
-      const updatedEmployee = await employeesService.updateEmployee(req.body);
-      if (updatedEmployee.rowsAffected != 0) {
-        return res.status(200).json({
-          msg: "OK",
-          result: { updated: updatedEmployee.recordset },
+          result: { updated: [response] },
         });
       } else {
         return res
@@ -104,8 +86,8 @@ module.exports = {
   deleteEmployee: async (req, res) => {
     try {
       let id = req.params.id;
-      let deleted = await employeesService.deleteEmployee(id);
-      if (deleted.rowsAffected != 0) {
+      const response = await Employees.findByIdAndDelete(id);
+      if (response) {
         return res.json({
           result: {
             msg: "OK",

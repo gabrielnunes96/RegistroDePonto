@@ -14,13 +14,13 @@ const employeeSchema = new Schema(
     cpf: {
       type: String,
       required: true,
+      unique: true,
     },
     pin: {
       type: String,
     },
     password: {
       type: String,
-      required: true,
     },
   },
   { timestamps: true }

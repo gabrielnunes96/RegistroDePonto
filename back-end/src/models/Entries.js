@@ -9,17 +9,10 @@ const entriesSchema = new Schema(
     punchOut: {
       type: Date,
     },
-    employee: [
-      {
-        employeeName: {
-          type: String,
-        },
-        employeePin: {
-          type: String,
-          required: true,
-        },
-      },
-    ],
+    employeePin: {
+      type: String,
+      required: true,
+    },
   },
   { timestamps: true }
 );
