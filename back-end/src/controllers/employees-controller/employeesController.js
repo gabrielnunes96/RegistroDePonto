@@ -1,6 +1,6 @@
 //#region Imports
 const Employees = require("../../models/Employees.js");
-const validationCall = require("../../validations/validationCall.js");
+const validationCall = require("../../validations/validation-call.js");
 const mapper = require("../../mappers/employee-mapper.js");
 //#endregion
 module.exports = {

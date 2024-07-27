@@ -1,5 +1,5 @@
 const Entries = require("../../models/Entries.js");
-const validationCall = require("../../validations/validationCall.js");
+const validationCall = require("../../validations/validation-call.js");
 const mapper = require("../../mappers/entries-mapper.js");
 
 module.exports = {
