@@ -20,6 +20,9 @@ const employeeSchema = new Schema({
   password: {
     type: String,
   },
+  isAdmin: {
+    type: Boolean,
+  },
 });
 const Employees = mongoose.model("Employees", employeeSchema);
 module.exports = Employees;

@@ -1,4 +1,5 @@
 const router = require("express").Router();
+const authenticate = require("../utils/authenticate.js");
 
 //#region  Controller Variables
 const employeesController = require("../controllers/employees-controller/employeesController.js");
@@ -8,18 +9,19 @@ const entriesController = require("../controllers/entries-controller/entriesCont
 //#region Controller Routes
 
 /* Employees Routes */
-router.get("/getEmployees", employeesController.getAllEmployees);
-router.get("/getEmployeesById/:id", employeesController.getEmployeeById);
-router.post("/insertEmployee", employeesController.insertEmployee);
-router.put("/updateEmployee/:id", employeesController.updateEmployee);
-router.delete("/deleteEmployee/:id", employeesController.deleteEmployee);
+router.get("/getEmployees",authenticate, employeesController.getAllEmployees);
+router.get("/getEmployeesById/:id", authenticate, employeesController.getEmployeeById);
+router.post("/insertEmployee",authenticate, employeesController.insertEmployee);
+router.put("/updateEmployee/:id", authenticate, employeesController.updateEmployee);
+router.delete("/deleteEmployee/:id", authenticate, employeesController.deleteEmployee);
+router.post("/signIn", employeesController.signIn);
 
 /* Entries Routes */
-router.get("/getAllEntries", entriesController.getAllEntries);
-router.get("getByEntrieById/:id", entriesController.getByEntrieById);
-router.post("/insertEntrie", entriesController.insertEntrie);
-router.put("/updateEntrie/:id", entriesController.updateEntrie);
-router.delete("/deleteEntrie/:id", entriesController.deleteEntrie);
+router.get("/getAllEntries", authenticate, entriesController.getAllEntries);
+router.get("getByEntrieById/:id", authenticate, entriesController.getByEntrieById);
+router.post("/insertEntrie", authenticate, entriesController.insertEntrie);
+router.put("/updateEntrie/:id", authenticate, entriesController.updateEntrie);
+router.delete("/deleteEntrie/:id", authenticate, entriesController.deleteEntrie);
 //#endregion Controller Routes
 
 module.exports = router;

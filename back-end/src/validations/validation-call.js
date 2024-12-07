@@ -33,7 +33,12 @@ const validationCall = {
   },
   execEntriesValidations: function execEntriesValidations(obj) {
     let msg = "";
-    if (obj == null || obj != null) msg = "deu";
+    if (!functions.objectValidation(obj)) msg = invalidObject;
+    if (
+      !functions.nullValidation(obj.employeePin) ||
+      !functions.nullValidation(obj.employeeName)
+    )
+      msg = reqMissingFields;
     return msg;
   },
 };

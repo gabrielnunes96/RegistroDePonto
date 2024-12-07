@@ -12,7 +12,7 @@ const entriesSchema = new Schema({
     type: String,
     required: true,
   },
-  employeeNAme: {
+  employeeName: {
     type: String,
   },
 });

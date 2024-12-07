@@ -2,6 +2,8 @@
 const Employees = require("../../models/Employees.js");
 const validationCall = require("../../validations/validation-call.js");
 const mapper = require("../../mappers/employee-mapper.js");
+const bcrypt = require("bcrypt");
+const token = require("../../utils/token.js");
 //#endregion
 module.exports = {
   getAllEmployees: async (req, res) => {
@@ -95,6 +97,26 @@ module.exports = {
         return res
           .status(400)
           .json({ msg: "Bad Request", result: response.errors });
+      }
+    } catch (erro) {
+      return res
+        .status(500)
+        .json({ msg: "Internal server error", result: erro.message });
+    }
+  },
+  signIn: async (req, res) => {
+    try {
+      const user = await Employees.findOne({ pin: req.body.pin }).exec();
+      const passwordMatch = bcrypt.compare(req.body.password, user.password);
+      if (passwordMatch) {
+        const acessToken = token.sign({ data: user.id });
+        return res
+          .status(200)
+          .json({ msg: "OK", isAdmin: user.isAdmin, result: `Bearer ${acessToken}` });
+      } else {
+        return res
+          .status(401)
+          .json({ msg: "Unauthorized", result: "E-mail ou senha inválidos" });
       }
     } catch (erro) {
       return res

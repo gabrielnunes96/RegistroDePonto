@@ -9,6 +9,7 @@ const mappers = {
       password: response
         ? response.password
         : security.encryptPassword(reqBody.password),
+      isAdmin: reqBody.isAdmin ? reqBody.isAdmin : response.isAdmin,
     };
     return employee;
   },
