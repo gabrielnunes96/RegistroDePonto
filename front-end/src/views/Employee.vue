@@ -1,19 +1,15 @@
 <template>
-  <div>
-    <h1>
-      Employee View <br />
-      //TODO --> Develop employee dashboard calls (register entries and report export)
-    </h1>
-    <EmployeeDashboard />
+  <div class="employee-view-container">
+    <router-view></router-view>
   </div>
 </template>
+
 <script>
-import EmployeeDashboard from './EmployeeDashboard.vue'
 export default {
-  name: 'Employee',
-  components: {
-    EmployeeDashboard
-  }
+  name: 'Employee'
 }
 </script>
-<style></style>
+
+<style scoped>
+/* Removido o estilo do .employee-view-container, pois foi externalizado */
+</style>

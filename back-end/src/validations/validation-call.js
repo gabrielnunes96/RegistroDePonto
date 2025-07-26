@@ -39,6 +39,12 @@ const validationCall = {
       !functions.nullValidation(obj.employeeName)
     )
       msg = reqMissingFields;
+    if (
+      obj.isLate === true &&
+      (!obj.justification || obj.justification.trim() === "")
+    ) {
+      msg = "Justificativa obrigatória para registro em atraso.";
+    }
     return msg;
   },
 };

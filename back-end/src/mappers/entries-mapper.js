@@ -1,16 +1,9 @@
 const mappers = {
-  mapToEntrie: function mapToEntrie(reqBody, response) {
+  mapToEntrie: function mapToEntrie(reqBody, existingEntry = null) {
     const entrie = {
-      punchIn: reqBody.punchIn ? reqBody.punchIn : response.punchIn,
-      punchOut: reqBody.punchOut ? reqBody.punchOut : response.punchOut,
-      employeePin: reqBody.employeePin
-        ? reqBody.employeePin
-        : response.employeePin,
-      employeeNAme: reqBody.employeeName
-        ? reqBody.employeeName
-        : response.employeeName,
+      employeePin: reqBody.employeePin || existingEntry?.employeePin || null,
+      employeeName: reqBody.employeeName || existingEntry?.employeeName || null,
     };
-
     return entrie;
   },
 };

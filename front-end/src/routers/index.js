@@ -2,16 +2,25 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from '@/views/Home.vue'
 import Admin from '@/views/Admin.vue'
 import Login from '@/views/Login.vue'
-import Employee from '@/views/Employee.vue'
+// import Employee from '@/views/Employee.vue' // Removendo importação direta
 import AdminDashboard from '@/views/AdminDashboard.vue'
-import EmployeeDashboard from '@/views/EmployeeDashboard.vue'
 import Cadastro from '@/views/Cadastro.vue'
+import EmployeeReport from '@/views/EmployeeReport.vue'
 import { useUserStore } from '@/stores'
 
 const requireAuth = (to, from, next) => {
   const userStore = useUserStore()
   if (!userStore.isAuth) {
     next('/')
+  } else {
+    next()
+  }
+}
+
+const requireAdmin = (to, from, next) => {
+  const userStore = useUserStore()
+  if (!userStore.isAuth || !userStore.isAdmin) {
+    next('/home')
   } else {
     next()
   }
@@ -33,7 +42,7 @@ const routes = [
     path: '/admin',
     name: 'Admin',
     component: Admin,
-    beforeEnter: requireAuth,
+    beforeEnter: requireAdmin,
     children: [
       {
         path: 'adminDashboard',
@@ -45,13 +54,23 @@ const routes = [
   {
     path: '/employee',
     name: 'Employee',
-    component: Employee,
+    component: () => import('@/views/Employee.vue'),
     beforeEnter: requireAuth,
     children: [
       {
-        path: 'employeeDashboard',
-        name: 'EmployeeDashboard',
-        component: EmployeeDashboard
+        path: 'normal',
+        name: 'RegisterNormal',
+        component: () => import('@/components/RegisterEntrie.vue')
+      },
+      {
+        path: 'late',
+        name: 'RegisterLate',
+        component: () => import('@/components/RegisterLateEntrie.vue')
+      },
+      {
+        path: 'report',
+        name: 'EmployeeReport',
+        component: EmployeeReport
       }
     ]
   },
@@ -59,7 +78,7 @@ const routes = [
     path: '/cadastro',
     name: 'Cadastro',
     component: Cadastro,
-    beforeEnter: requireAuth
+    beforeEnter: requireAdmin
   }
 ]
 

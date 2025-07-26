@@ -29,7 +29,7 @@ const validations = {
     return contactRegex.test(contact);
   },
   nullValidation: function nullValidation(value) {
-    return value != "" || value != null;
+    return value !== "" && value !== null && value !== undefined;
   },
   objectValidation: function objectValidation(obj) {
     return !obj || !Object.keys(obj).length !== 0;

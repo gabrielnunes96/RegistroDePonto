@@ -5,6 +5,7 @@ const mapper = require("../../mappers/employee-mapper.js");
 const bcrypt = require("bcrypt");
 const token = require("../../utils/token.js");
 //#endregion
+
 module.exports = {
   getAllEmployees: async (req, res) => {
     try {
@@ -110,9 +111,11 @@ module.exports = {
       const passwordMatch = bcrypt.compare(req.body.password, user.password);
       if (passwordMatch) {
         const acessToken = token.sign({ data: user.id });
-        return res
-          .status(200)
-          .json({ msg: "OK", isAdmin: user.isAdmin, result: `Bearer ${acessToken}` });
+        return res.status(200).json({
+          msg: "OK",
+          isAdmin: user.isAdmin,
+          result: `Bearer ${acessToken}`,
+        });
       } else {
         return res
           .status(401)
@@ -122,6 +125,40 @@ module.exports = {
       return res
         .status(500)
         .json({ msg: "Internal server error", result: erro.message });
+    }
+  },
+  findEmployeeByPin: async (req, res) => {
+    try {
+      const pin = req.params.pin;
+
+      if (!pin) {
+        return res.status(400).json({
+          msg: "Bad Request",
+          result: "PIN is required",
+        });
+      }
+
+      const response = await Employees.findOne(
+        { pin },
+        { name: 1, contact: 1, cpf: 1, pin: 1, isAdmin: 1, lastEntry: 1 }
+      );
+
+      if (response) {
+        return res.status(200).json({
+          msg: "OK",
+          result: response,
+        });
+      } else {
+        return res.status(404).json({
+          msg: "Employee not found",
+          result: null,
+        });
+      }
+    } catch (error) {
+      return res.status(500).json({
+        msg: "Internal server error",
+        result: error.message,
+      });
     }
   },
 };

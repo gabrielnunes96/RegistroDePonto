@@ -1,8 +1,6 @@
 <template>
   <div>
     <h1>
-      Admin View <br />
-      //TODO --> Develop: see employee dashboard and register entrie when needed for all employes
       <AdminDashboard />
     </h1>
   </div>
